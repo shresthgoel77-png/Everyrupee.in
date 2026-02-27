@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <nav class="er-nav">
+  <a href="index.html" class="er-nav__logo">Every<span>Rupee</span></a>
+  <ul class="er-nav__links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="planner.html" class="active">Planner</a></li>
+    <li><a href="edcuation.html">education</a></li>
+    <li><a href="risk.html">Risk Analyser</a></li>
+  </ul>
+</nav>  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Risk Analyser - EveryRupee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for glowing elements and animations */
+        body {
+            background-color: #fff8f0; /* Deep dark slate */
+            color: #030c15;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Glowing Accent Button */
+        .btn-glow {
+            background-color: transparent;
+            border: 2px solid #eab308; /* Rich gold */
+            color: #eab308;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px rgba(234, 179, 8, 0.2);
+        }
+        .btn-glow:hover {
+            background-color: rgba(234, 179, 8, 0.1);
+            box-shadow: 0 0 15px #eab308, inset 0 0 5px rgba(234, 179, 8, 0.5);
+            transform: scale(1.02);
+            color: #fef08a;
+        }
+        .btn-glow:active {
+            box-shadow: 0 0 25px #eab308, inset 0 0 10px rgba(234, 179, 8, 0.8);
+            transform: scale(0.98);
+        }
+
+        /* Circular Gauge SVG Animation */
+        .gauge-bg {
+            fill: none;
+            stroke: #f4f5f7;
+            stroke-width: 12;
+        }
+        .gauge-progress {
+            fill: none;
+            stroke-width: 12;
+            stroke-linecap: round;
+            /* Circumference = 2 * PI * r (r=60) = ~377 */
+            stroke-dasharray: 377;
+            stroke-dashoffset: 377; 
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Smooth fade-in for results */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hide visually */
+        .hidden-panel {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <header class="w-full bg-[#166534] py-4 shadow-lg shadow-black/20">
+        <div class="max-w-4xl mx-auto px-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-bold text-white tracking-tight">Every<span class="text-[#eab308]">Rupee</span></span>
+            </div>
+            <nav class="hidden sm:block">
+                <span class="text-emerald-100 text-sm font-medium">Financial Literacy Educational Tools</span>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-3xl mx-auto px-4 py-10 flex flex-col items-center">
+        
+        <div class="text-center mb-10 w-full">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Website Risk Analyser</h1>
+            <p class="text-slate-300 text-lg leading-relaxed max-w-2xl mx-auto">
+                Learn how to spot visible red flags in website URLs. Paste a link below to see how common scam patterns are identified. 
+            </p>
+        </div>
+
+        <div id="input-section" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-xl shadow-black/40 relative z-10 transition-all duration-500">
+            <label for="urlInput" class="block text-slate-300 text-sm font-semibold mb-2">Enter Website URL to Analyze</label>
+            <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                <input 
+                    type="url" 
+                    id="urlInput" 
+                    placeholder="https://example.com" 
+                    class="flex-grow bg-slate-800 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-[#eab308] focus:ring-1 focus:ring-[#eab308] transition-colors"
+                    aria-label="Website URL input"
+                >
+                <button 
+                    id="analyzeBtn" 
+                    class="btn-glow font-bold rounded-lg px-8 py-3 w-full sm:w-auto text-lg whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-[#eab308]"
+                >
+                    Analyze URL
+                </button>
+            </div>
+            
+            <div id="errorMsg" class="hidden text-rose-400 text-sm mb-4 font-medium" role="alert"></div>
+
+            <div class="pt-4 border-t border-slate-700/50">
+                <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold mr-3">Try Examples:</span>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    <button class="example-link text-sm bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-600 rounded px-3 py-1 transition-colors" data-url="https://www.everyrupee.com/learning">Safe Example</button>
+                    <button class="example-link text-sm bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-600 rounded px-3 py-1 transition-colors" data-url="http://update.account.verify.everyrupee-alert.com">Medium Example</button>
+                    <button class="example-link text-sm bg-slate-800 hover:bg-slate-700 text-rose-400 border border-slate-600 rounded px-3 py-1 transition-colors" data-url="http://bit.ly/urgent-free-prize-login">High Risk Example</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="results-section" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-xl shadow-black/40 mt-8 hidden-panel">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                
+                <div class="relative flex-shrink-0 w-40 h-40 flex items-center justify-center">
+                    <svg width="160" height="160" viewBox="0 0 160 160">
+                        <circle class="gauge-bg" cx="80" cy="80" r="60"></circle>
+                        <circle id="gaugeProgress" class="gauge-progress stroke-emerald-500" cx="80" cy="80" r="60"></circle>
+                    </svg>
+                    <div class="absolute flex flex-col items-center justify-center">
+                        <span id="scoreValue" class="text-4xl font-extrabold text-white">0</span>
+                        <span class="text-xs text-slate-400 font-medium tracking-wide uppercase">Score</span>
+                    </div>
+                </div>
+
+                <div class="flex-grow text-center md:text-left w-full">
+                    <h2 class="text-2xl font-bold text-white mb-2">Analysis Complete</h2>
+                    <div class="mb-4">
+                        <span id="riskBadge" class="inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-emerald-900/50 text-emerald-400 border border-emerald-500/30">
+                            Low Risk
+                        </span>
+                    </div>
+                    <p id="summaryText" class="text-slate-300 text-sm leading-relaxed"></p>
+                </div>
+            </div>
+
+            <hr class="border-slate-700 my-6">
+
+            <div>
+                <h3 class="text-lg font-bold text-white mb-4">Risk Factors Detected:</h3>
+                <ul id="factorsList" class="space-y-3">
+                    </ul>
+            </div>
+
+            <div class="mt-8 bg-slate-800/50 border border-slate-700 rounded-lg p-4 flex gap-4 items-start">
+                <div class="text-amber-500 flex-shrink-0 mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed italic">
+                    "This tool checks visible URL patterns only and does not guarantee website safety. This is an educational tool for learning purposes only and does not detect real fraud, access any blacklists, check Google Safe Browsing, or provide any security guarantee. Always verify websites independently before entering personal or financial information."
+                </p>
+            </div>
+
+            <div class="mt-8 flex justify-center md:justify-start">
+                <button id="resetBtn" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500">
+                    Try Another URL
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="w-full bg-[#0f172a] border-t border-slate-800 py-6 mt-10">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-slate-500 text-xs leading-relaxed max-w-3xl mx-auto">
+                "This tool checks visible URL patterns only and does not guarantee website safety. This is an educational tool for learning purposes only and does not detect real fraud, access any blacklists, check Google Safe Browsing, or provide any security guarantee. Always verify websites independently before entering personal or financial information."<br><br>
+                &copy; <span id="year"></span> EveryRupee. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Data arrays required by the risk logic
+        const suspiciousKeywords = ['urgent', 'prize', 'win', 'free', 'claim', 'verify', 'update', 'account', 'login', 'password', 'bank', 'secure', 'offer', 'limited', 'exclusive', 'alert', 'now', 'click'];
+        const shortenerDomains = ['bit.ly', 'tinyurl.com', 'goo.gl', 't.co', 'ow.ly', 'is.gd', 'buff.ly', 'rebrand.ly', 'shorturl.at', 'tiny.cc', 'adf.ly', 'shorte.st', 'linktr.ee'];
+
+        // DOM Elements
+        const urlInput = document.getElementById('urlInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const inputSection = document.getElementById('input-section');
+        const resultsSection = document.getElementById('results-section');
+        const gaugeProgress = document.getElementById('gaugeProgress');
+        const scoreValue = document.getElementById('scoreValue');
+        const riskBadge = document.getElementById('riskBadge');
+        const summaryText = document.getElementById('summaryText');
+        const factorsList = document.getElementById('factorsList');
+        const resetBtn = document.getElementById('resetBtn');
+        const exampleLinks = document.querySelectorAll('.example-link');
+
+        // Event Listeners
+        analyzeBtn.addEventListener('click', handleAnalyze);
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleAnalyze();
+        });
+        resetBtn.addEventListener('click', resetUI);
+        exampleLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                urlInput.value = link.getAttribute('data-url');
+                handleAnalyze();
+            });
+        });
+
+        /**
+         * Core Analysis Function 
+         * Parses URL and calculates score based on predefined rules.
+         */
+        function handleAnalyze() {
+    const rawInput = urlInput.value.trim();
+    errorMsg.classList.add('hidden');
+    
+    if (!rawInput) {
+        showError('Please enter a website URL.');
+        return;
+    }
+
+    let url;
+    try {
+        url = new URL(rawInput.includes('://') ? rawInput : `http://${rawInput}`);
+    } catch (err) {
+        showError('Please enter a valid full URL (e.g. https://example.com)');
+        return;
+    }
+
+    const factors = [];
+    let totalScore = 0;
+
+    const hostname = url.hostname.toLowerCase();
+    const fullUrlString = url.toString().toLowerCase();
+
+    // -----------------------------
+    // 1. HTTPS Check
+    // -----------------------------
+    if (url.protocol !== 'https:') {
+        totalScore += 35;
+        factors.push({
+            points: 35,
+            text: 'No HTTPS encryption detected.',
+            icon: '⚠️',
+            colorClass: 'text-rose-400'
+        });
+    }
+
+    // -----------------------------
+    // 2. IP Address Detection
+    // -----------------------------
+    const isIP = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
+    if (isIP) {
+        totalScore += 40;
+        factors.push({
+            points: 40,
+            text: 'Using raw IP address instead of domain name.',
+            icon: '⚠️',
+            colorClass: 'text-rose-400'
+        });
+    }
+
+    // -----------------------------
+    // 3. Suspicious TLD Detection
+    // -----------------------------
+    const suspiciousTLDs = ['.xyz', '.top', '.club', '.click', '.info', '.online', '.site', '.live'];
+    if (suspiciousTLDs.some(tld => hostname.endsWith(tld))) {
+        totalScore += 20;
+        factors.push({
+            points: 20,
+            text: 'Uncommon or suspicious domain extension detected.',
+            icon: '⚠️',
+            colorClass: 'text-amber-400'
+        });
+    }
+
+    // -----------------------------
+    // 4. Excessive Subdomains
+    // -----------------------------
+    const parts = hostname.split('.');
+    if (parts.length > 4) {
+        totalScore += 25;
+        factors.push({
+            points: 25,
+            text: 'Too many subdomains detected.',
+            icon: '⚠️',
+            colorClass: 'text-amber-400'
+        });
+    }
+
+    // -----------------------------
+    // 5. Hyphen Abuse
+    // -----------------------------
+    const hyphenCount = (hostname.match(/-/g) || []).length;
+    if (hyphenCount >= 3) {
+        totalScore += 15;
+        factors.push({
+            points: 15,
+            text: 'Multiple hyphens in domain name.',
+            icon: '⚠️',
+            colorClass: 'text-amber-400'
+        });
+    }
+
+    // -----------------------------
+    // 6. Suspicious Keywords
+    // -----------------------------
+    const suspiciousKeywords = [
+        'urgent', 'prize', 'win', 'free', 'claim',
+        'verify', 'update', 'account', 'login',
+        'password', 'bank', 'secure', 'offer',
+        'limited', 'exclusive', 'alert', 'now', 'click'
+    ];
+
+    const matchedKeywords = suspiciousKeywords.filter(k => fullUrlString.includes(k));
+    if (matchedKeywords.length > 0) {
+        const keywordScore = Math.min(40, matchedKeywords.length * 8);
+        totalScore += keywordScore;
+        factors.push({
+            points: keywordScore,
+            text: `Suspicious words found: ${matchedKeywords.join(', ')}`,
+            icon: '⚠️',
+            colorClass: 'text-amber-400'
+        });
+    }
+
+    // -----------------------------
+    // 7. URL Length Check
+    // -----------------------------
+    if (fullUrlString.length > 100) {
+        totalScore += 15;
+        factors.push({
+            points: 15,
+            text: 'Unusually long URL detected.',
+            icon: '⚠️',
+            colorClass: 'text-amber-400'
+        });
+    }
+
+    // -----------------------------
+    // 8. Too Many Numbers
+    // -----------------------------
+    const numbersCount = (hostname.match(/\d/g) || []).length;
+    if (numbersCount >= 5) {
+        totalScore += 15;
+        factors.push({
+            points: 15,
+            text: 'Domain contains excessive numeric characters.',
+            icon: '⚠️',
+            colorClass: 'text-amber-400'
+        });
+    }
+
+    // -----------------------------
+    // 9. Fake Brand Impersonation
+    // -----------------------------
+    const knownBrands = ['paypal', 'amazon', 'google', 'facebook', 'instagram', 'bank', 'icici', 'hdfc', 'sbi'];
+    knownBrands.forEach(brand => {
+        if (hostname.includes(brand) && !hostname.endsWith(`${brand}.com`)) {
+            totalScore += 25;
+            factors.push({
+                points: 25,
+                text: `Possible brand impersonation detected: ${brand}`,
+                icon: '⚠️',
+                colorClass: 'text-rose-400'
+            });
+        }
+    });
+
+    // -----------------------------
+    // Final Score
+    // -----------------------------
+    const riskScore = Math.min(100, totalScore);
+
+    displayResults(riskScore, factors);
+}
+        function displayResults(score, factors) {
+            // Determine Risk Level Styling
+            let levelText, badgeColor, strokeColor, summary;
+            
+            if (score <= 30) {
+                levelText = 'Low Risk';
+                badgeColor = 'bg-emerald-900/50 text-emerald-400 border-emerald-500/30';
+                strokeColor = '#10b981'; // emerald-500
+                summary = 'Based on visible patterns, this URL structure does not trigger major red flags. However, always exercise caution.';
+            } else if (score <= 60) {
+                levelText = 'Medium Risk';
+                badgeColor = 'bg-amber-900/50 text-amber-400 border-amber-500/30';
+                strokeColor = '#f59e0b'; // amber-500
+                summary = 'We detected some suspicious patterns in this URL. Proceed with caution and verify the source.';
+            } else {
+                levelText = 'High Risk';
+                badgeColor = 'bg-rose-900/50 text-rose-400 border-rose-500/30';
+                strokeColor = '#f43f5e'; // rose-500
+                summary = 'Multiple severe red flags detected! This URL structure is highly typical of phishing or scam attempts.';
+            }
+
+            // Populate Score and Badge
+            scoreValue.textContent = score;
+            riskBadge.textContent = levelText;
+            riskBadge.className = `inline-block px-4 py-1.5 rounded-full text-sm font-bold border ${badgeColor}`;
+            summaryText.textContent = summary;
+
+            // Populate Factors List
+            factorsList.innerHTML = '';
+            if (factors.length === 0) {
+                factorsList.innerHTML = `
+                    <li class="flex items-start gap-3 bg-slate-800/50 rounded p-3">
+                        <span class="text-emerald-500 mt-0.5">✅</span>
+                        <div class="text-sm text-slate-300">
+                            <strong class="text-emerald-400">0 points:</strong> Looks safe based on visible patterns!
+                        </div>
+                    </li>`;
+            } else {
+                factors.forEach(factor => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start gap-3 bg-slate-800/50 rounded p-3';
+                    li.innerHTML = `
+                        <span class="${factor.colorClass} mt-0.5">${factor.icon}</span>
+                        <div class="text-sm text-slate-300">
+                            <strong class="${factor.colorClass}">+${factor.points} points:</strong> ${factor.text}
+                        </div>
+                    `;
+                    factorsList.appendChild(li);
+                });
+            }
+
+            // Animate SVG Gauge
+            // Max offset is 377 (0%), Min offset is 0 (100%)
+            const circumference = 377;
+            const offset = circumference - (score / 100) * circumference;
+            
+            // Reset stroke for re-animation
+            gaugeProgress.style.transition = 'none';
+            gaugeProgress.style.strokeDashoffset = circumference;
+            gaugeProgress.style.stroke = strokeColor;
+            
+            // Force reflow
+            void gaugeProgress.offsetWidth; 
+            
+            // Apply animation
+            gaugeProgress.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease';
+            gaugeProgress.style.strokeDashoffset = offset;
+
+            // Swap Panels
+            inputSection.classList.add('hidden-panel');
+            resultsSection.classList.remove('hidden-panel');
+            resultsSection.classList.add('fade-in');
+        }
+
+        /**
+         * Resets the application back to the input state
+         */
+        function resetUI() {
+            urlInput.value = '';
+            errorMsg.classList.add('hidden');
+            
+            resultsSection.classList.add('hidden-panel');
+            resultsSection.classList.remove('fade-in');
+            
+            inputSection.classList.remove('hidden-panel');
+            inputSection.classList.add('fade-in');
+            
+            // Reset SVG offset
+            gaugeProgress.style.strokeDashoffset = 377;
+        }
+
+        /**
+         * Displays a temporary inline error message
+         */
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

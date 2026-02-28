@@ -478,20 +478,36 @@
     position: relative;
     overflow: hidden;
   }
-  #cta::before {
-    content: '$';
+  /* #cta::before {
+    content: '₹';
     position: absolute;
     font-family: 'Playfair Display', serif;
     font-size: 60vw;
     font-weight: 900;
-    color: rgba(255,255,255,0.02);
+    color: rgba(255,255,255,0.8);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
     user-select: none;
     line-height: 1;
-  }
+  } */
+
+  #cta::before {
+  content: '₹'; /* or '$' */
+  position: absolute;
+  font-family: 'Playfair Display', serif;
+  font-size: 60vw;
+  font-weight: 900;
+  color: rgba(255,255,255,0.15);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  z-index: 0;
+}
 
   #cta .section-label { color: var(--gold); }
 

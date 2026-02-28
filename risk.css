@@ -38,5 +38,13 @@ span {
 }
 
 .text-white {
-  color: #000;
+  color: #fff;
+}
+
+.web {
+  color: black;
+}
+
+.webd {
+  color: darkgray;
 }

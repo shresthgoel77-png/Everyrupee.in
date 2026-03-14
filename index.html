@@ -88,7 +88,7 @@
   .nav-cta:hover { background: var(--green-light) !important; transform: translateY(-1px); }
 
   /* ── HERO ── */
-  #hero {
+  /* #hero {
     position: relative;
     height: 100vh;
     display: flex;
@@ -96,7 +96,36 @@
     justify-content: center;
     overflow: hidden;
     background: var(--parchment);
-  }
+  } */
+
+  #hero {
+  /* Ensure the container is relative so children can be absolute */
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Full viewport height */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  overflow: hidden; /* Hide anything that overflows the container */
+  /* Remove any existing background-color */
+  background-color: transparent; 
+}
+
+.back-video {
+  /* Position the video at the top-left of the hero section */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* The magic property to make it act like a background-image */
+  object-fit: cover; 
+  
+  /* Place the video behind the text content */
+  z-index: 0;
+}
 
   .hero-bg-text {
     position: absolute;
@@ -154,6 +183,7 @@
   }
 
   .hero-sub {
+    font-weight: 500;
     font-size: 1.05rem;
     color: var(--muted);
     max-width: 520px;
@@ -266,10 +296,14 @@
   .video-overlay-text p {
     margin-top: 0.8rem;
     font-size: clamp(0.85rem, 1.5vw, 1rem);
-    color: rgba(255,255,255,0.65);
+    color: rgba(0,0,0,0.9);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    font-weight: 400;
+    font-weight: 900;
+  }
+
+  .change-colour {
+    color: rgb(99, 231, 48);
   }
 
   #bill-video {
@@ -603,8 +637,8 @@
 </nav>
 
 <!-- HERO -->
-<section id="hero">
-  <div class="hero-bg-text">₹$</div>
+<!-- <section id="hero">
+  <div class="hero-bg-text">₹</div>
   <div class="hero-content">
     <div class="hero-eyebrow">Personal Finance · Made Simple</div>
     <h1 class="hero-title">
@@ -622,7 +656,37 @@
     <span>Scroll</span>
     <div class="scroll-line"></div>
   </div>
+</section> -->
+
+<!-- HERO -->
+<section id="hero">
+  <video autoplay muted loop playsinline class="back-video">
+    <source src="/videos/farzi.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="hero-bg-text">₹</div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Personal Finance • Made Simple</div>
+    <h1 class="hero-title">
+      Make <em>every</em><br>ruppee work<br>for you.
+    </h1>
+    <p class="hero-sub">
+      Learn how to invest smarter, spend wiser, and plan for every stage of life — with education built around real numbers.
+    </p>
+    <div class="hero-actions">
+      <a href="#features" class="btn-primary">Explore Free Lessons</a>
+      <a href="#video-scroll-section" class="btn-ghost">See How It Works ↓</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
 </section>
+
 
 <!-- VIDEO SCROLL ANIMATION -->
 <section id="video-scroll-section">
@@ -636,7 +700,7 @@
     ></video>
     <div class="video-overlay-text" id="overlay-text">
       <h2>Is this<br>real money?</h2>
-      <p>Every dollar has a story. Let's tell yours.</p>
+      <p>Every dollar <span class="change-colour">has a story. Let's</span> tell yours.</p>
     </div>
     <div class="video-progress-bar" id="progress-bar"></div>
   </div>

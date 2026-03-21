@@ -146,6 +146,33 @@ body {
   margin: 0 auto;
   text-align: center;
 }
+
+.hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This makes the video crop perfectly to fill the space without squishing */
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* A black overlay at 60% opacity. Adjust the 0.6 up or down depending on how bright your video is */
+  background-color: rgba(0, 0, 0, 0.1); 
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+}
+
 .page-hero__eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 0.8rem; font-weight: 600;
@@ -170,10 +197,11 @@ body {
 }
 .page-hero__subtitle {
   font-size: 1.1rem;
-  color: var(--text-secondary);
+  /* color: var(--text-secondary); */
+  color: #184511;
   max-width: 560px;
   margin: 0 auto;
-  font-weight: 300;
+  font-weight: 600;
   line-height: 1.7;
 }
 
@@ -948,12 +976,17 @@ body {
   cursor: pointer;
   transition: all var(--transition-base);
 }
+
+
+
 .edu-tab.active {
   background: var(--surface-card);
   color: var(--green-800);
   font-weight: 700;
   box-shadow: var(--shadow-sm);
 }
+
+
 
 /* Topic grid */
 .topic-grid {
@@ -969,11 +1002,14 @@ body {
   border-radius: var(--radius-lg);
   padding: 0;
   overflow: hidden;
+  margin-top: 5rem;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-base);
   cursor: pointer;
 }
 .topic-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+
+
 
 .topic-card__top {
   padding: 28px;

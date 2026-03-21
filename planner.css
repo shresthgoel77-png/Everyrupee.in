@@ -146,6 +146,33 @@ body {
   margin: 0 auto;
   text-align: center;
 }
+
+.hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This makes the video crop perfectly to fill the space without squishing */
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* A black overlay at 60% opacity. Adjust the 0.6 up or down depending on how bright your video is */
+  background-color: rgba(0, 0, 0, 0.1); 
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+}
+
 .page-hero__eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 0.8rem; font-weight: 600;
@@ -170,10 +197,11 @@ body {
 }
 .page-hero__subtitle {
   font-size: 1.1rem;
-  color: var(--text-secondary);
+  /* color: var(--text-secondary); */
+  color: #184511;
   max-width: 560px;
   margin: 0 auto;
-  font-weight: 300;
+  font-weight: 600;
   line-height: 1.7;
 }
 
@@ -742,30 +770,56 @@ body {
   font-weight: 700; color: var(--green-900);
 }
 
-/* Projection chart bars */
+
+/* 1. The main container - Forces the 5 columns to sit in a row */
 .proj-bars {
-  display: flex; align-items: flex-end; gap: 8px;
-  height: 160px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* Anchors everything to the bottom */
+  width: 100%;
 }
+
+/* 2. The column for each year */
 .proj-bar-group {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 18%; /* Gives each column equal breathing room */
 }
+
+/* 3. The actual visual bar */
 .proj-bar {
-  width: 100%; border-radius: 6px 6px 0 0;
-  transition: height 1s cubic-bezier(0.34,1.56,0.64,1);
-  position: relative;
+  width: 36px; /* Width of the gold bar */
+  background-color: var(--gold-400, #CBA358); /* The gold color from your legend */
+  border-radius: 4px 4px 0 0; /* Rounded top corners */
+  margin: 0 auto;
+  
+  /* CRITICAL: Must be relative so the text tip can float above it */
+  position: relative; 
+  display: flex;
+  justify-content: center;
+  transition: height 0.8s ease-out; /* Smooth animation when JS loads it */
 }
-.proj-bar--invested { background: var(--green-200, #b7deca); }
-.proj-bar--returns  { background: linear-gradient(180deg, var(--gold-400), var(--gold-500)); }
-.proj-bar-year {
-  font-size: 0.72rem; color: var(--text-muted); font-weight: 500;
-}
+
+/* 4. The Wealth Text (e.g., ₹4.4Cr) */
 .proj-bar-tip {
-  position: absolute; top: -24px; left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.68rem; font-weight: 700;
-  color: var(--green-800);
-  white-space: nowrap;
+  /* Position absolute pulls it OUT of the colored bar so it floats on top */
+  position: absolute;
+  top: -24px; /* Pushes the text 24px above the gold bar */
+  font-weight: 600;
+  color: var(--text-main, #333);
+  font-size: 0.9rem;
+  white-space: nowrap; /* Prevents text from breaking into two lines */
+}
+
+/* 5. The Year Label (e.g., 5Y, 10Y) */
+.proj-bar-year {
+  margin-top: 12px;
+  color: var(--text-muted, #888);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
 }
 
 /* Investment cards */
@@ -922,12 +976,17 @@ body {
   cursor: pointer;
   transition: all var(--transition-base);
 }
+
+
+
 .edu-tab.active {
   background: var(--surface-card);
   color: var(--green-800);
   font-weight: 700;
   box-shadow: var(--shadow-sm);
 }
+
+
 
 /* Topic grid */
 .topic-grid {
@@ -943,11 +1002,14 @@ body {
   border-radius: var(--radius-lg);
   padding: 0;
   overflow: hidden;
+  margin-top: 5rem;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-base);
   cursor: pointer;
 }
 .topic-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+
+
 
 .topic-card__top {
   padding: 28px;

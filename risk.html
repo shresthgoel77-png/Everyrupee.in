@@ -88,97 +88,170 @@
         </div>
     </header> -->
 
-    <main class="flex-grow w-full max-w-3xl mx-auto px-4 py-10 flex flex-col items-center">
+    <main class="flex-grow w-full max-w-4xl mx-auto px-4 py-10 flex flex-col items-center">
         
+        <div class="flex bg-slate-800 rounded-lg p-1 mb-8 shadow-lg shadow-black/20 w-full sm:w-auto">
+            <button id="tab-url" class="flex-1 sm:px-8 py-2.5 rounded-md text-sm font-bold bg-[#eab308] text-slate-900 shadow transition-all">
+                URL Analyser
+            </button>
+            <button id="tab-scamlab" class="flex-1 sm:px-8 py-2.5 rounded-md text-sm font-bold text-slate-400 hover:text-white transition-all">
+                Scam Lab
+            </button>
+        </div>
+
         <div class="text-center mb-10 w-full">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-4 web">Website Risk Analyser</h1>
-            <p class="text-slate-300 text-lg leading-relaxed max-w-2xl mx-auto webd">
+            <h1 id="main-title" class="text-3xl sm:text-4xl font-extrabold text-white mb-4 web">Website Risk Analyser</h1>
+            <p id="main-desc" class="text-slate-300 text-lg leading-relaxed max-w-2xl mx-auto webd">
                 Learn how to spot visible red flags in website URLs. Paste a link below to see how common scam patterns are identified. 
             </p>
         </div>
 
-        <div id="input-section" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-xl shadow-black/40 relative z-10 transition-all duration-500">
-            <label for="urlInput" class="block text-slate-300 text-sm font-semibold mb-2">Enter Website URL to Analyze</label>
-            <div class="flex flex-col sm:flex-row gap-4 mb-4">
-                <input 
-                    type="url" 
-                    id="urlInput" 
-                    placeholder="https://example.com" 
-                    class="flex-grow bg-slate-800 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-[#eab308] focus:ring-1 focus:ring-[#eab308] transition-colors"
-                    aria-label="Website URL input"
-                >
-                <button 
-                    id="analyzeBtn" 
-                    class="btn-glow font-bold rounded-lg px-8 py-3 w-full sm:w-auto text-lg whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-[#eab308]"
-                >
-                    Analyze URL
-                </button>
+        <div id="url-app-container" class="w-full max-w-3xl">
+            <div id="input-section" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-xl shadow-black/40 relative z-10 transition-all duration-500">
+                <label for="urlInput" class="block text-slate-300 text-sm font-semibold mb-2">Enter Website URL to Analyze</label>
+                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                    <input type="url" id="urlInput" placeholder="https://example.com" class="flex-grow bg-slate-800 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-[#eab308] focus:ring-1 focus:ring-[#eab308] transition-colors" aria-label="Website URL input">
+                    <button id="analyzeBtn" class="btn-glow font-bold rounded-lg px-8 py-3 w-full sm:w-auto text-lg whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-[#eab308]">
+                        Analyze URL
+                    </button>
+                </div>
+                <div id="errorMsg" class="hidden text-rose-400 text-sm mb-4 font-medium" role="alert"></div>
+                <div class="pt-4 border-t border-slate-700/50">
+                    <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold mr-3">Try Examples:</span>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <button class="example-link text-sm bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-600 rounded px-3 py-1 transition-colors" data-url="https://www.everyrupee.com/learning">Safe Example</button>
+                        <button class="example-link text-sm bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-600 rounded px-3 py-1 transition-colors" data-url="http://update.account.verify.everyrupee-alert.com">Medium Example</button>
+                        <button class="example-link text-sm bg-slate-800 hover:bg-slate-700 text-rose-400 border border-slate-600 rounded px-3 py-1 transition-colors" data-url="http://bit.ly/urgent-free-prize-login">High Risk Example</button>
+                    </div>
+                </div>
             </div>
-            
-            <div id="errorMsg" class="hidden text-rose-400 text-sm mb-4 font-medium" role="alert"></div>
 
-            <div class="pt-4 border-t border-slate-700/50">
-                <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold mr-3">Try Examples:</span>
-                <div class="flex flex-wrap gap-2 mt-2">
-                    <button class="example-link text-sm bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-600 rounded px-3 py-1 transition-colors" data-url="https://www.everyrupee.com/learning">Safe Example</button>
-                    <button class="example-link text-sm bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-600 rounded px-3 py-1 transition-colors" data-url="http://update.account.verify.everyrupee-alert.com">Medium Example</button>
-                    <button class="example-link text-sm bg-slate-800 hover:bg-slate-700 text-rose-400 border border-slate-600 rounded px-3 py-1 transition-colors" data-url="http://bit.ly/urgent-free-prize-login">High Risk Example</button>
+            <div id="results-section" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-xl shadow-black/40 mt-8 hidden-panel">
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="relative flex-shrink-0 w-40 h-40 flex items-center justify-center">
+                        <svg width="160" height="160" viewBox="0 0 160 160">
+                            <circle class="gauge-bg" cx="80" cy="80" r="60"></circle>
+                            <circle id="gaugeProgress" class="gauge-progress stroke-emerald-500" cx="80" cy="80" r="60"></circle>
+                        </svg>
+                        <div class="absolute flex flex-col items-center justify-center">
+                            <span id="scoreValue" class="text-4xl font-extrabold text-white">0</span>
+                            <span class="text-xs text-slate-400 font-medium tracking-wide uppercase">Score</span>
+                        </div>
+                    </div>
+                    <div class="flex-grow text-center md:text-left w-full">
+                        <h2 class="text-2xl font-bold text-white mb-2">Analysis Complete</h2>
+                        <div class="mb-4">
+                            <span id="riskBadge" class="inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-emerald-900/50 text-emerald-400 border border-emerald-500/30">Low Risk</span>
+                        </div>
+                        <p id="summaryText" class="text-slate-300 text-sm leading-relaxed"></p>
+                    </div>
+                </div>
+                <hr class="border-slate-700 my-6">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">Risk Factors Detected:</h3>
+                    <ul id="factorsList" class="space-y-3"></ul>
+                </div>
+                <div class="mt-8 flex justify-center md:justify-start">
+                    <button id="resetBtn" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">Try Another URL</button>
                 </div>
             </div>
         </div>
 
-        <div id="results-section" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-xl shadow-black/40 mt-8 hidden-panel">
-            <div class="flex flex-col md:flex-row items-center gap-8">
+        <div id="scamlab-container" class="hidden w-full flex flex-col gap-10 max-w-4xl">
+            
+            <div class="w-full bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-xl shadow-black/40">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-3xl">🎯</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Live Attack Simulator</h3>
+                        <p class="text-slate-400 text-sm">Experience how modern financial phishing attacks look on your screen.</p>
+                    </div>
+                </div>
                 
-                <div class="relative flex-shrink-0 w-40 h-40 flex items-center justify-center">
-                    <svg width="160" height="160" viewBox="0 0 160 160">
-                        <circle class="gauge-bg" cx="80" cy="80" r="60"></circle>
-                        <circle id="gaugeProgress" class="gauge-progress stroke-emerald-500" cx="80" cy="80" r="60"></circle>
-                    </svg>
-                    <div class="absolute flex flex-col items-center justify-center">
-                        <span id="scoreValue" class="text-4xl font-extrabold text-white">0</span>
-                        <span class="text-xs text-slate-400 font-medium tracking-wide uppercase">Score</span>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-slate-300 text-sm font-semibold mb-2">Target Name (Optional)</label>
+                            <input type="text" id="targetName" placeholder="e.g., Rahul" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-rose-500 transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 text-sm font-semibold mb-2">Select Attack Medium</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button class="medium-select bg-slate-800 border border-slate-600 text-white rounded-lg py-3 text-sm font-bold hover:border-emerald-500 transition-colors" data-type="WhatsApp">WhatsApp</button>
+                                <button class="medium-select bg-slate-800 border border-slate-600 text-white rounded-lg py-3 text-sm font-bold hover:border-blue-500 transition-colors" data-type="SMS">SMS</button>
+                                <button class="medium-select bg-slate-800 border border-slate-600 text-white rounded-lg py-3 text-sm font-bold hover:border-amber-500 transition-colors" data-type="Email">Email</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="launchAttackBtn" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg px-8 py-4 mt-2 transition-colors shadow-lg shadow-rose-900/50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        🚀 Launch Simulated Attack
+                    </button>
+                </div>
+            </div>
+
+            <div class="w-full border-t border-slate-700 pt-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-3xl">🧠</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Scam Spotting Training</h3>
+                        <p class="text-slate-400 text-sm">Can you identify the fake messages? Test your instincts.</p>
                     </div>
                 </div>
 
-                <div class="flex-grow text-center md:text-left w-full">
-                    <h2 class="text-2xl font-bold text-white mb-2">Analysis Complete</h2>
-                    <div class="mb-4">
-                        <span id="riskBadge" class="inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-emerald-900/50 text-emerald-400 border border-emerald-500/30">
-                            Low Risk
-                        </span>
+                <div class="w-full flex justify-between items-center mb-4 px-2">
+                    <span class="text-slate-400 font-bold tracking-wide">LEVEL: <span id="game-level" class="text-[#eab308] text-xl">1</span></span>
+                    <span class="text-slate-400 font-bold tracking-wide">SCORE: <span id="game-score" class="text-emerald-400 text-xl">0</span></span>
+                </div>
+
+                <div class="w-full bg-[#0a1120] border-2 border-slate-700 rounded-2xl p-6 shadow-2xl relative min-h-[250px] flex flex-col justify-center">
+                    <div id="game-loader" class="text-center">
+                        <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#eab308] mb-4"></div>
+                        <p class="text-slate-400 animate-pulse font-medium">AI is generating a real-world scenario...</p>
                     </div>
-                    <p id="summaryText" class="text-slate-300 text-sm leading-relaxed"></p>
+
+                    <div id="game-scenario" class="hidden">
+                        <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-800">
+                            <span id="scenario-icon" class="text-2xl">📱</span>
+                            <span id="scenario-type" class="text-sm font-bold uppercase tracking-widest text-slate-400">WhatsApp Message</span>
+                        </div>
+                        <p id="scenario-text" class="text-lg text-white leading-relaxed font-medium bg-slate-800/50 p-4 rounded-lg border-l-4 border-[#eab308]"></p>
+                    </div>
                 </div>
-            </div>
 
-            <hr class="border-slate-700 my-6">
-
-            <div>
-                <h3 class="text-lg font-bold text-white mb-4">Risk Factors Detected:</h3>
-                <ul id="factorsList" class="space-y-3">
-                    </ul>
-            </div>
-
-            <div class="mt-8 bg-slate-800/50 border border-slate-700 rounded-lg p-4 flex gap-4 items-start">
-                <div class="text-amber-500 flex-shrink-0 mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
+                <div id="game-actions" class="hidden flex flex-col sm:flex-row gap-4 mt-6 w-full">
+                    <button id="btn-safe" class="flex-1 bg-slate-800 hover:bg-emerald-900/60 border border-slate-600 hover:border-emerald-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-emerald-500/20 text-xl flex items-center justify-center gap-2">
+                        <span>✅</span> Looks Safe
+                    </button>
+                    <button id="btn-scam" class="flex-1 bg-slate-800 hover:bg-rose-900/60 border border-slate-600 hover:border-rose-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-rose-500/20 text-xl flex items-center justify-center gap-2">
+                        <span>🚨</span> It's a Scam
+                    </button>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed italic">
-                    "This tool checks visible URL patterns only and does not guarantee website safety. This is an educational tool for learning purposes only and does not detect real fraud, access any blacklists, check Google Safe Browsing, or provide any security guarantee. Always verify websites independently before entering personal or financial information."
-                </p>
-            </div>
 
-            <div class="mt-8 flex justify-center md:justify-start">
-                <button id="resetBtn" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500">
-                    Try Another URL
-                </button>
+                <div id="game-feedback" class="hidden w-full mt-6 bg-slate-800 border border-slate-600 rounded-xl p-6 fade-in shadow-xl">
+                    <h3 id="feedback-title" class="text-2xl font-bold mb-3 flex items-center gap-2"></h3>
+                    <p id="feedback-text" class="text-slate-300 text-lg leading-relaxed"></p>
+                    <button id="btn-next" class="mt-6 w-full btn-glow font-bold rounded-lg px-8 py-4 text-lg">
+                        Next Scenario ➡️
+                    </button>
+                </div>
             </div>
         </div>
 
     </main>
+
+    <div id="notification-wrapper" class="fixed top-4 left-0 right-0 z-50 flex justify-center pointer-events-none opacity-0 transform -translate-y-20 transition-all duration-500 ease-out">
+        <div id="notification-card" class="bg-[#f0f0f0] shadow-2xl rounded-2xl w-[90%] max-w-sm overflow-hidden border border-gray-300 pointer-events-auto">
+            <div id="notif-header" class="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white">
+                <span id="notif-icon" class="text-lg drop-shadow">💬</span>
+                <span id="notif-app" class="text-xs font-bold uppercase tracking-wider opacity-90">WhatsApp</span>
+                <span class="text-xs ml-auto opacity-80 text-white">now</span>
+            </div>
+            <div class="px-4 py-3 bg-white">
+                <p id="notif-sender" class="font-bold text-gray-900 text-sm mb-1 leading-tight">Unknown Number</p>
+                <p id="notif-message" class="text-gray-700 text-sm line-clamp-3 leading-snug"></p>
+            </div>
+        </div>
+    </div>
 
     <footer class="w-full bg-[#0f172a] border-t border-slate-800 py-6 mt-10">
         <div class="max-w-4xl mx-auto px-4 text-center">
@@ -192,11 +265,12 @@
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // Data arrays required by the risk logic
-        const suspiciousKeywords = ['urgent', 'prize', 'win', 'free', 'claim', 'verify', 'update', 'account', 'login', 'password', 'bank', 'secure', 'offer', 'limited', 'exclusive', 'alert', 'now', 'click'];
-        const shortenerDomains = ['bit.ly', 'tinyurl.com', 'goo.gl', 't.co', 'ow.ly', 'is.gd', 'buff.ly', 'rebrand.ly', 'shorturl.at', 'tiny.cc', 'adf.ly', 'shorte.st', 'linktr.ee'];
+        // 🔥 IMPORTANT: PASTE YOUR REAL GEMINI API KEY HERE 🔥
+        const GEMINI_API_KEY = "PASTE_YOUR_REAL_API_KEY_HERE"; 
 
-        // DOM Elements
+        // ==========================================
+        // 1. URL ANALYSER LOGIC
+        // ==========================================
         const urlInput = document.getElementById('urlInput');
         const analyzeBtn = document.getElementById('analyzeBtn');
         const errorMsg = document.getElementById('errorMsg');
@@ -210,12 +284,10 @@
         const resetBtn = document.getElementById('resetBtn');
         const exampleLinks = document.querySelectorAll('.example-link');
 
-        // Event Listeners
         analyzeBtn.addEventListener('click', handleAnalyze);
-        urlInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleAnalyze();
-        });
+        urlInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAnalyze(); });
         resetBtn.addEventListener('click', resetUI);
+        
         exampleLinks.forEach(link => {
             link.addEventListener('click', () => {
                 urlInput.value = link.getAttribute('data-url');
@@ -223,272 +295,251 @@
             });
         });
 
-        /**
-         * Core Analysis Function 
-         * Parses URL and calculates score based on predefined rules.
-         */
         function handleAnalyze() {
-    const rawInput = urlInput.value.trim();
-    errorMsg.classList.add('hidden');
-    
-    if (!rawInput) {
-        showError('Please enter a website URL.');
-        return;
-    }
+            const rawInput = urlInput.value.trim();
+            errorMsg.classList.add('hidden');
+            if (!rawInput) return showError('Please enter a website URL.');
 
-    let url;
-    try {
-        url = new URL(rawInput.includes('://') ? rawInput : `http://${rawInput}`);
-    } catch (err) {
-        showError('Please enter a valid full URL (e.g. https://example.com)');
-        return;
-    }
-
-    const factors = [];
-    let totalScore = 0;
-
-    const hostname = url.hostname.toLowerCase();
-    const fullUrlString = url.toString().toLowerCase();
-
-    // -----------------------------
-    // 1. HTTPS Check
-    // -----------------------------
-    if (url.protocol !== 'https:') {
-        totalScore += 35;
-        factors.push({
-            points: 35,
-            text: 'No HTTPS encryption detected.',
-            icon: '⚠️',
-            colorClass: 'text-rose-400'
-        });
-    }
-
-    // -----------------------------
-    // 2. IP Address Detection
-    // -----------------------------
-    const isIP = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
-    if (isIP) {
-        totalScore += 40;
-        factors.push({
-            points: 40,
-            text: 'Using raw IP address instead of domain name.',
-            icon: '⚠️',
-            colorClass: 'text-rose-400'
-        });
-    }
-
-    // -----------------------------
-    // 3. Suspicious TLD Detection
-    // -----------------------------
-    const suspiciousTLDs = ['.xyz', '.top', '.club', '.click', '.info', '.online', '.site', '.live'];
-    if (suspiciousTLDs.some(tld => hostname.endsWith(tld))) {
-        totalScore += 20;
-        factors.push({
-            points: 20,
-            text: 'Uncommon or suspicious domain extension detected.',
-            icon: '⚠️',
-            colorClass: 'text-amber-400'
-        });
-    }
-
-    // -----------------------------
-    // 4. Excessive Subdomains
-    // -----------------------------
-    const parts = hostname.split('.');
-    if (parts.length > 4) {
-        totalScore += 25;
-        factors.push({
-            points: 25,
-            text: 'Too many subdomains detected.',
-            icon: '⚠️',
-            colorClass: 'text-amber-400'
-        });
-    }
-
-    // -----------------------------
-    // 5. Hyphen Abuse
-    // -----------------------------
-    const hyphenCount = (hostname.match(/-/g) || []).length;
-    if (hyphenCount >= 3) {
-        totalScore += 15;
-        factors.push({
-            points: 15,
-            text: 'Multiple hyphens in domain name.',
-            icon: '⚠️',
-            colorClass: 'text-amber-400'
-        });
-    }
-
-    // -----------------------------
-    // 6. Suspicious Keywords
-    // -----------------------------
-    const suspiciousKeywords = [
-        'urgent', 'prize', 'win', 'free', 'claim',
-        'verify', 'update', 'account', 'login',
-        'password', 'bank', 'secure', 'offer',
-        'limited', 'exclusive', 'alert', 'now', 'click'
-    ];
-
-    const matchedKeywords = suspiciousKeywords.filter(k => fullUrlString.includes(k));
-    if (matchedKeywords.length > 0) {
-        const keywordScore = Math.min(40, matchedKeywords.length * 8);
-        totalScore += keywordScore;
-        factors.push({
-            points: keywordScore,
-            text: `Suspicious words found: ${matchedKeywords.join(', ')}`,
-            icon: '⚠️',
-            colorClass: 'text-amber-400'
-        });
-    }
-
-    // -----------------------------
-    // 7. URL Length Check
-    // -----------------------------
-    if (fullUrlString.length > 100) {
-        totalScore += 15;
-        factors.push({
-            points: 15,
-            text: 'Unusually long URL detected.',
-            icon: '⚠️',
-            colorClass: 'text-amber-400'
-        });
-    }
-
-    // -----------------------------
-    // 8. Too Many Numbers
-    // -----------------------------
-    const numbersCount = (hostname.match(/\d/g) || []).length;
-    if (numbersCount >= 5) {
-        totalScore += 15;
-        factors.push({
-            points: 15,
-            text: 'Domain contains excessive numeric characters.',
-            icon: '⚠️',
-            colorClass: 'text-amber-400'
-        });
-    }
-
-    // -----------------------------
-    // 9. Fake Brand Impersonation
-    // -----------------------------
-    const knownBrands = ['paypal', 'amazon', 'google', 'facebook', 'instagram', 'bank', 'icici', 'hdfc', 'sbi'];
-    knownBrands.forEach(brand => {
-        if (hostname.includes(brand) && !hostname.endsWith(`${brand}.com`)) {
-            totalScore += 25;
-            factors.push({
-                points: 25,
-                text: `Possible brand impersonation detected: ${brand}`,
-                icon: '⚠️',
-                colorClass: 'text-rose-400'
-            });
-        }
-    });
-
-    // -----------------------------
-    // Final Score
-    // -----------------------------
-    const riskScore = Math.min(100, totalScore);
-
-    displayResults(riskScore, factors);
-}
-        function displayResults(score, factors) {
-            // Determine Risk Level Styling
-            let levelText, badgeColor, strokeColor, summary;
-            
-            if (score <= 30) {
-                levelText = 'Low Risk';
-                badgeColor = 'bg-emerald-900/50 text-emerald-400 border-emerald-500/30';
-                strokeColor = '#10b981'; // emerald-500
-                summary = 'Based on visible patterns, this URL structure does not trigger major red flags. However, always exercise caution.';
-            } else if (score <= 60) {
-                levelText = 'Medium Risk';
-                badgeColor = 'bg-amber-900/50 text-amber-400 border-amber-500/30';
-                strokeColor = '#f59e0b'; // amber-500
-                summary = 'We detected some suspicious patterns in this URL. Proceed with caution and verify the source.';
-            } else {
-                levelText = 'High Risk';
-                badgeColor = 'bg-rose-900/50 text-rose-400 border-rose-500/30';
-                strokeColor = '#f43f5e'; // rose-500
-                summary = 'Multiple severe red flags detected! This URL structure is highly typical of phishing or scam attempts.';
+            let url;
+            try {
+                url = new URL(rawInput.includes('://') ? rawInput : `http://${rawInput}`);
+            } catch (err) {
+                return showError('Please enter a valid full URL (e.g. https://example.com)');
             }
 
-            // Populate Score and Badge
+            const factors = [];
+            let totalScore = 0;
+            const hostname = url.hostname.toLowerCase();
+            const fullUrlString = url.toString().toLowerCase();
+
+            if (url.protocol !== 'https:') { totalScore += 35; factors.push({ points: 35, text: 'No HTTPS encryption detected.', icon: '⚠️', colorClass: 'text-rose-400' }); }
+            if (/^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) { totalScore += 40; factors.push({ points: 40, text: 'Using raw IP address.', icon: '⚠️', colorClass: 'text-rose-400' }); }
+            if (['.xyz', '.top', '.club', '.click', '.info', '.online', '.site', '.live'].some(tld => hostname.endsWith(tld))) { totalScore += 20; factors.push({ points: 20, text: 'Suspicious domain extension.', icon: '⚠️', colorClass: 'text-amber-400' }); }
+            if (hostname.split('.').length > 4) { totalScore += 25; factors.push({ points: 25, text: 'Too many subdomains.', icon: '⚠️', colorClass: 'text-amber-400' }); }
+            if ((hostname.match(/-/g) || []).length >= 3) { totalScore += 15; factors.push({ points: 15, text: 'Multiple hyphens in domain.', icon: '⚠️', colorClass: 'text-amber-400' }); }
+            
+            const suspiciousKeywords = ['urgent', 'prize', 'win', 'free', 'claim', 'verify', 'update', 'account', 'login', 'password', 'bank', 'secure', 'offer', 'alert', 'now', 'click'];
+            const matchedKeywords = suspiciousKeywords.filter(k => fullUrlString.includes(k));
+            if (matchedKeywords.length > 0) { totalScore += Math.min(40, matchedKeywords.length * 8); factors.push({ points: Math.min(40, matchedKeywords.length * 8), text: `Suspicious words found: ${matchedKeywords.join(', ')}`, icon: '⚠️', colorClass: 'text-amber-400' }); }
+            
+            if (fullUrlString.length > 100) { totalScore += 15; factors.push({ points: 15, text: 'Unusually long URL detected.', icon: '⚠️', colorClass: 'text-amber-400' }); }
+            if ((hostname.match(/\d/g) || []).length >= 5) { totalScore += 15; factors.push({ points: 15, text: 'Excessive numeric characters.', icon: '⚠️', colorClass: 'text-amber-400' }); }
+            
+            ['paypal', 'amazon', 'google', 'facebook', 'instagram', 'bank', 'icici', 'hdfc', 'sbi'].forEach(brand => {
+                if (hostname.includes(brand) && !hostname.endsWith(`${brand}.com`)) { totalScore += 25; factors.push({ points: 25, text: `Possible brand impersonation: ${brand}`, icon: '⚠️', colorClass: 'text-rose-400' }); }
+            });
+
+            displayResults(Math.min(100, totalScore), factors);
+        }
+
+        function displayResults(score, factors) {
+            let levelText, badgeColor, strokeColor, summary;
+            if (score <= 30) { levelText = 'Low Risk'; badgeColor = 'bg-emerald-900/50 text-emerald-400 border-emerald-500/30'; strokeColor = '#10b981'; summary = 'No major red flags detected. However, always exercise caution.'; }
+            else if (score <= 60) { levelText = 'Medium Risk'; badgeColor = 'bg-amber-900/50 text-amber-400 border-amber-500/30'; strokeColor = '#f59e0b'; summary = 'Suspicious patterns detected. Verify the source.'; }
+            else { levelText = 'High Risk'; badgeColor = 'bg-rose-900/50 text-rose-400 border-rose-500/30'; strokeColor = '#f43f5e'; summary = 'Multiple severe red flags! Highly typical of phishing/scam attempts.'; }
+
             scoreValue.textContent = score;
             riskBadge.textContent = levelText;
             riskBadge.className = `inline-block px-4 py-1.5 rounded-full text-sm font-bold border ${badgeColor}`;
             summaryText.textContent = summary;
 
-            // Populate Factors List
-            factorsList.innerHTML = '';
-            if (factors.length === 0) {
-                factorsList.innerHTML = `
-                    <li class="flex items-start gap-3 bg-slate-800/50 rounded p-3">
-                        <span class="text-emerald-500 mt-0.5">✅</span>
-                        <div class="text-sm text-slate-300">
-                            <strong class="text-emerald-400">0 points:</strong> Looks safe based on visible patterns!
-                        </div>
-                    </li>`;
-            } else {
-                factors.forEach(factor => {
-                    const li = document.createElement('li');
-                    li.className = 'flex items-start gap-3 bg-slate-800/50 rounded p-3';
-                    li.innerHTML = `
-                        <span class="${factor.colorClass} mt-0.5">${factor.icon}</span>
-                        <div class="text-sm text-slate-300">
-                            <strong class="${factor.colorClass}">+${factor.points} points:</strong> ${factor.text}
-                        </div>
-                    `;
-                    factorsList.appendChild(li);
-                });
-            }
+            factorsList.innerHTML = factors.length === 0 ? `<li class="flex items-start gap-3 bg-slate-800/50 rounded p-3"><span class="text-emerald-500 mt-0.5">✅</span><div class="text-sm text-slate-300"><strong class="text-emerald-400">0 points:</strong> Looks safe based on visible patterns!</div></li>` : factors.map(f => `<li class="flex items-start gap-3 bg-slate-800/50 rounded p-3"><span class="${f.colorClass} mt-0.5">${f.icon}</span><div class="text-sm text-slate-300"><strong class="${f.colorClass}">+${f.points} points:</strong> ${f.text}</div></li>`).join('');
 
-            // Animate SVG Gauge
-            // Max offset is 377 (0%), Min offset is 0 (100%)
-            const circumference = 377;
-            const offset = circumference - (score / 100) * circumference;
-            
-            // Reset stroke for re-animation
+            const offset = 377 - (score / 100) * 377;
             gaugeProgress.style.transition = 'none';
-            gaugeProgress.style.strokeDashoffset = circumference;
+            gaugeProgress.style.strokeDashoffset = 377;
             gaugeProgress.style.stroke = strokeColor;
-            
-            // Force reflow
             void gaugeProgress.offsetWidth; 
-            
-            // Apply animation
             gaugeProgress.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease';
             gaugeProgress.style.strokeDashoffset = offset;
 
-            // Swap Panels
             inputSection.classList.add('hidden-panel');
             resultsSection.classList.remove('hidden-panel');
             resultsSection.classList.add('fade-in');
         }
 
-        /**
-         * Resets the application back to the input state
-         */
         function resetUI() {
             urlInput.value = '';
             errorMsg.classList.add('hidden');
-            
             resultsSection.classList.add('hidden-panel');
             resultsSection.classList.remove('fade-in');
-            
             inputSection.classList.remove('hidden-panel');
             inputSection.classList.add('fade-in');
-            
-            // Reset SVG offset
             gaugeProgress.style.strokeDashoffset = 377;
         }
 
-        /**
-         * Displays a temporary inline error message
-         */
-        function showError(msg) {
-            errorMsg.textContent = msg;
-            errorMsg.classList.remove('hidden');
+        function showError(msg) { errorMsg.textContent = msg; errorMsg.classList.remove('hidden'); }
+
+        // ==========================================
+        // 2. SCAM LAB LOGIC (Tabs & UI)
+        // ==========================================
+        const tabUrl = document.getElementById('tab-url');
+        const tabScamLab = document.getElementById('tab-scamlab');
+        const urlAppContainer = document.getElementById('url-app-container');
+        const scamlabContainer = document.getElementById('scamlab-container');
+        const mainTitle = document.getElementById('main-title');
+        const mainDesc = document.getElementById('main-desc');
+
+        tabUrl.addEventListener('click', () => {
+            tabUrl.classList.add('bg-[#eab308]', 'text-slate-900'); tabUrl.classList.remove('text-slate-400');
+            tabScamLab.classList.remove('bg-[#eab308]', 'text-slate-900'); tabScamLab.classList.add('text-slate-400');
+            urlAppContainer.classList.remove('hidden'); scamlabContainer.classList.add('hidden');
+            mainTitle.textContent = "Website Risk Analyser"; mainDesc.textContent = "Learn how to spot visible red flags in website URLs.";
+        });
+
+        tabScamLab.addEventListener('click', () => {
+            tabScamLab.classList.add('bg-[#eab308]', 'text-slate-900'); tabScamLab.classList.remove('text-slate-400');
+            tabUrl.classList.remove('bg-[#eab308]', 'text-slate-900'); tabUrl.classList.add('text-slate-400');
+            scamlabContainer.classList.remove('hidden'); urlAppContainer.classList.add('hidden');
+            mainTitle.textContent = "The Scam Lab"; mainDesc.textContent = "Experience live attacks and train your instincts to identify modern financial fraud.";
+            if(currentLevel === 1 && !currentScenario) generateScenario();
+        });
+
+        // ==========================================
+        // 3. LIVE ATTACK SIMULATOR (Top Section)
+        // ==========================================
+        let selectedMedium = null;
+        const mediumButtons = document.querySelectorAll('.medium-select');
+        const launchBtn = document.getElementById('launchAttackBtn');
+
+        mediumButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                mediumButtons.forEach(b => b.classList.remove('border-emerald-500', 'border-blue-500', 'border-amber-500', 'bg-slate-700'));
+                selectedMedium = e.target.getAttribute('data-type');
+                if(selectedMedium === 'WhatsApp') e.target.classList.add('border-emerald-500', 'bg-slate-700');
+                if(selectedMedium === 'SMS') e.target.classList.add('border-blue-500', 'bg-slate-700');
+                if(selectedMedium === 'Email') e.target.classList.add('border-amber-500', 'bg-slate-700');
+            });
+        });
+
+        launchBtn.addEventListener('click', async () => {
+            if (!selectedMedium) return alert("Please select an attack medium (WhatsApp, SMS, or Email).");
+            
+            if (GEMINI_API_KEY === "PASTE_YOUR_REAL_API_KEY_HERE") {
+                return alert("You need to paste your real Google Gemini API Key into the script on line 3 for this to work!");
+            }
+
+            const targetName = document.getElementById('targetName').value || "User";
+            launchBtn.disabled = true;
+            launchBtn.innerHTML = `<span class="animate-pulse">Generating Payload...</span>`;
+
+            const prompt = `You are a penetration tester. Generate a highly realistic, modern financial scam message targeting an Indian user. Target Name: ${targetName}, Medium: ${selectedMedium}. Return ONLY a valid JSON object: {"sender": "Fake sender name (e.g., 'HDFC Alerts', '+91 9876543210', 'Income Tax Dept')", "message": "The exact scam text containing a fake urgent action and a sketchy link."}`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9, responseMimeType: "application/json" } })
+                });
+
+                const data = await response.json();
+                const simulatedScam = JSON.parse(data.candidates[0].content.parts[0].text);
+                triggerNotification(selectedMedium, simulatedScam.sender, simulatedScam.message);
+
+            } catch (error) {
+                console.error("AI Error:", error);
+                alert("Failed to connect to AI. Check your API key and internet connection.");
+            } finally {
+                launchBtn.disabled = false;
+                launchBtn.innerHTML = `🚀 Launch Simulated Attack`;
+            }
+        });
+
+        function triggerNotification(app, sender, message) {
+            const wrapper = document.getElementById('notification-wrapper');
+            const header = document.getElementById('notif-header');
+            const icon = document.getElementById('notif-icon');
+            
+            document.getElementById('notif-sender').textContent = sender;
+            document.getElementById('notif-message').textContent = message;
+            document.getElementById('notif-app').textContent = app;
+
+            if (app === "WhatsApp") { header.className = "flex items-center gap-2 px-4 py-2 bg-[#25D366] text-white"; icon.textContent = "💬"; } 
+            else if (app === "SMS") { header.className = "flex items-center gap-2 px-4 py-2 bg-blue-500 text-white"; icon.textContent = "📱"; } 
+            else if (app === "Email") { header.className = "flex items-center gap-2 px-4 py-2 bg-rose-500 text-white"; icon.textContent = "📧"; }
+
+            // Slide Down Animation
+            wrapper.classList.remove('opacity-0', '-translate-y-20');
+            wrapper.classList.add('opacity-100', 'translate-y-0');
+
+            // Slide Up Animation after 6 seconds
+            setTimeout(() => {
+                wrapper.classList.remove('opacity-100', 'translate-y-0');
+                wrapper.classList.add('opacity-0', '-translate-y-20');
+            }, 6000);
         }
+
+        // ==========================================
+        // 4. TRAINING GAME LOGIC (Bottom Section)
+        // ==========================================
+        let currentLevel = 1;
+        let playerScore = 0;
+        let currentScenario = null;
+
+        async function generateScenario() {
+            document.getElementById('game-loader').classList.remove('hidden');
+            document.getElementById('game-scenario').classList.add('hidden');
+            document.getElementById('game-actions').classList.add('hidden');
+            document.getElementById('game-feedback').classList.add('hidden');
+
+            const prompt = `You are a cybersecurity educator for Indian users. Create a short text scenario (SMS, WhatsApp, Email). Difficulty level: ${currentLevel} out of 10. Make it a SCAM 60% of the time, and SAFE 40% of the time. Return ONLY a valid JSON object: {"type": "WhatsApp" | "SMS" | "Email", "content": "The actual message the user receives", "isScam": true or false, "explanation": "A 2-sentence explanation highlighting specific red flags or green flags."}`;
+
+            try {
+                if (GEMINI_API_KEY === "PASTE_YOUR_REAL_API_KEY_HERE") return; // Prevents crash if no key
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9, responseMimeType: "application/json" } })
+                });
+
+                const data = await response.json();
+                currentScenario = JSON.parse(data.candidates[0].content.parts[0].text);
+                
+                const icons = {"WhatsApp": "💬", "SMS": "📱", "Email": "📧"};
+                document.getElementById('scenario-icon').textContent = icons[currentScenario.type] || "📱";
+                document.getElementById('scenario-type').textContent = currentScenario.type;
+                document.getElementById('scenario-text').textContent = `"${currentScenario.content}"`;
+                
+                document.getElementById('game-loader').classList.add('hidden');
+                document.getElementById('game-scenario').classList.remove('hidden');
+                document.getElementById('game-actions').classList.remove('hidden');
+
+            } catch (error) {
+                console.error("AI Error:", error);
+                document.getElementById('scenario-text').textContent = "⚠️ Error connecting to AI. Did you put your API key in the code?";
+                document.getElementById('game-loader').classList.add('hidden');
+                document.getElementById('game-scenario').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('btn-safe').addEventListener('click', () => handleGuess(false));
+        document.getElementById('btn-scam').addEventListener('click', () => handleGuess(true));
+
+        function handleGuess(userGuessedScam) {
+            document.getElementById('game-actions').classList.add('hidden'); 
+            const feedbackTitle = document.getElementById('feedback-title');
+            const gameFeedback = document.getElementById('game-feedback');
+            
+            if (userGuessedScam === currentScenario.isScam) {
+                playerScore += (currentLevel * 10);
+                document.getElementById('game-score').textContent = playerScore;
+                feedbackTitle.innerHTML = `<span>🎯</span> Correct!`;
+                feedbackTitle.className = "text-2xl font-bold mb-3 flex items-center gap-2 text-emerald-400";
+                gameFeedback.className = "w-full mt-6 bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-6 fade-in shadow-xl";
+            } else {
+                feedbackTitle.innerHTML = `<span>❌</span> Incorrect`;
+                feedbackTitle.className = "text-2xl font-bold mb-3 flex items-center gap-2 text-rose-400";
+                gameFeedback.className = "w-full mt-6 bg-rose-900/20 border border-rose-500/30 rounded-xl p-6 fade-in shadow-xl";
+            }
+
+            document.getElementById('feedback-text').textContent = currentScenario.explanation;
+            gameFeedback.classList.remove('hidden');
+        }
+
+        document.getElementById('btn-next').addEventListener('click', () => {
+            currentLevel++;
+            document.getElementById('game-level').textContent = currentLevel;
+            generateScenario();
+        });
     </script>
 </body>
 </html>

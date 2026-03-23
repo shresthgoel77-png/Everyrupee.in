@@ -1,0 +1,11 @@
+# Secrets
+.env
+
+# Node.js dependencies
+node_modules
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store

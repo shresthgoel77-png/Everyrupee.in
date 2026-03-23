@@ -1,0 +1,28 @@
+{
+  "name": "everyrupee.in",
+  "version": "1.0.0",
+  "description": "**EveryRupee** is an AI-driven personal finance platform built to make financial literacy simple, accessible, and actionable for everyone. Millions of individuals struggle with budgeting, savings planning, investment decisions, and identifying financial scams. Most existing tools are either too complex, overly generic, or not beginner-friendly. EveryRupee bridges this gap by offering intelligent, personalized financial guidance through a clean and conversational interface.",
+  "main": "planner.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shresthgoel77-png/Everyrupee.in.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/shresthgoel77-png/Everyrupee.in/issues"
+  },
+  "homepage": "https://github.com/shresthgoel77-png/Everyrupee.in#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  }
+}

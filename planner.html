@@ -16,8 +16,8 @@
     <li><a href="index.html">Home</a></li>
     <li><a href="planner.html" class="active">Planner</a></li>
     <li><a href="edcuation.html">education</a></li>
-    <li><a href="risk.html">Risk Analyser</a></li>
     <li><a href="investment.html">investments</a></li>
+    <li><a href="financial-advisor-match.html"class="er-nav__cta">finhelp</a></li>
   </ul>
 </nav>
 
@@ -470,7 +470,21 @@
     EveryRupee is an educational tool only. Nothing on this site constitutes investment advice, tax advice, or recommendation to buy/sell any financial product. All projections are illustrative. Past performance is not indicative of future returns. Please consult a SEBI-registered advisor before making investment decisions.
   </p>
 </footer>
-
 <script src="planner.js"></script>
+
+<!-- FIX: Prevent auto scroll -->
+<script>
+  // Disable the window.scrollTo() trigger inside renderStep() from planner.js
+  if (typeof renderStep === 'function') {
+    const originalRenderStep = renderStep;
+    renderStep = function() {
+      const originalScrollTo = window.scrollTo;
+      window.scrollTo = function() {}; // Prevent scroll jump
+      originalRenderStep();
+      window.scrollTo = originalScrollTo; // Restore normal scrolling
+    };
+  }
+</script>
+
 </body>
 </html>

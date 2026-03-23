@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <link rel="stylesheet" href="investment.css" />
 
 <nav class="navbar">
@@ -18,9 +19,10 @@
   <ul class="navbar__nav">
     <li><a href="index.html">Dashboard</a></li>
     <li><a href="planner.html">Planner</a></li>
-    <li><a href="risk.html" class="active">risk</a></li>
-    <li><a href="edcuation.html" class="active">education</a></li>
-    <li><a href="investment.html">investments</a></li>
+    <li><a href="edcuation.html" >education</a></li>
+    <li><a href="investment.html" class="active">investments</a></li>
+    <li><a href="financial-advisor-match.html" class="er-nav__cta">finhelp</a></li>
+
   </ul>
   <div class="navbar__actions">
     <button class="btn btn-ghost btn-sm" onclick="loadDemoPortfolio()">⚡ Demo Mode</button>
@@ -165,6 +167,7 @@
     </div>
 
     <div id="dashboard" class="hidden">
+      <div id="report-cta-bar"></div>
       <div class="section-heading">
         <div class="section-heading__label">Portfolio Analytics</div>
         <h2 class="section-heading__title">Dashboard Overview</h2>
@@ -259,12 +262,6 @@
         </div>
       </div>
     </div></div></main>
-
-<footer style="background: var(--green-900); color: rgba(250,246,238,0.45); text-align: center; padding: var(--space-lg); font-size: 0.8rem; margin-top: var(--space-xl);">
-  <span class="font-display" style="color: var(--gold-400); font-size: 1rem;">EveryRupee</span>
-  — Investment Assistant &nbsp;·&nbsp; Prices may be delayed. Not financial advice. &nbsp;·&nbsp;
-  <a href="#" style="color: var(--gold-300); text-decoration: none;">Privacy Policy</a>
-</footer>
 
 <div class="toast-container" id="toast-container"></div> 
 
@@ -1228,5 +1225,357 @@ function sendQuickMessage(text) { sendAIChatMessage(text); }
 
 renderAll();
 </script>
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+  EVERYRUPEE — AI PORTFOLIO REPORT FEATURE  (FIXED)
+  Replace your previous additions with this file.
+  3-step integration is identical — only the JS internals changed.
+═══════════════════════════════════════════════════════════════════════════════
+
+  STEP 1 — In <head>, add CDN after existing scripts:
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  STEP 2 — Dashboard button: paste after <div id="dashboard" class="hidden">
+
+  STEP 3 — CTA section + script: paste just before </body>
+═══════════════════════════════════════════════════════════════════════════════
+-->
+
+
+<!-- FIX: Removed floating download button -->
+
+<!-- ── STEP 3A: End-of-page CTA (paste before <footer>) ─────────────────── -->
+<section class="section" id="report-download-section"
+         style="padding:var(--space-xl) var(--space-lg);">
+  <div class="card card--gold-border" style="text-align:center;padding:var(--space-xl);">
+    <h2 class="card__title" style="font-size:1.4rem;margin-bottom:0.5rem;">
+      📊 Get Your Personalized Investment Report
+    </h2>
+    <p class="card__subtitle"
+       style="margin-top:0.5rem;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.6;">
+      Download a detailed AI-powered report with insights, risk analysis, and
+      smart recommendations tailored to your portfolio.
+    </p>
+    <button class="btn btn-gold btn-lg" onclick="generateAIReport()"
+            style="margin-top:var(--space-md);">
+      📄 Download Your Report
+    </button>
+  </div>
+</section>
+
+
+<!-- ── STEP 3B: Script (paste just before </body>) ──────────────────────── -->
+<script>
+'use strict';
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   AI ANALYSIS
+   ───────────────────────────────────────────────────────────────────────── */
+async function generateAIAnalysisText(portfolioData, summaryData) {
+  const prompt = `You are a professional financial advisor at a premium wealth management firm.
+
+Write a detailed, human-like portfolio analysis. Your tone should feel like Zerodha Varsity or a personal wealth manager — clear, warm, and insightful. Avoid robotic filler language.
+
+Portfolio JSON:
+${JSON.stringify(portfolioData, null, 2)}
+
+Summary:
+- Total Invested: ₹${summaryData.totalInvested.toLocaleString('en-IN')}
+- Current Value: ₹${summaryData.totalValue.toLocaleString('en-IN')}
+- P/L: ₹${summaryData.totalPL.toLocaleString('en-IN')} (${summaryData.totalPLPct.toFixed(2)}%)
+- Health Score: ${summaryData.healthScore}/100
+- Best Performer: ${summaryData.bestStock || 'N/A'}
+- Worst Performer: ${summaryData.worstStock || 'N/A'}
+
+Write these sections with the exact headings shown:
+
+## Performance Summary
+## Risk Analysis
+## Diversification Insights
+## Strengths
+## Areas to Watch
+## Actionable Recommendations
+## Closing Note
+
+Keep total length under 600 words.`;
+
+  // 1. Try existing Node backend
+  try {
+    const res = await fetch('http://localhost:5000/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: prompt, context: { hasData: true, portfolio: portfolioData, summary: summaryData } })
+    });
+    if (res.ok) { const d = await res.json(); if (d.reply) return d.reply; }
+  } catch (_) {}
+
+  // 2. Try Claude API directly
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    if (res.ok) {
+      const d = await res.json();
+      const text = d.content?.find(b => b.type === 'text')?.text;
+      if (text) return text;
+    }
+  } catch (_) {}
+
+  // 3. Offline fallback — still personalised
+  const { totalPLPct, bestStock, worstStock, healthScore } = summaryData;
+  const sentiment = totalPLPct >= 5 ? 'performing well' : totalPLPct >= 0 ? 'holding steady' : 'facing headwinds';
+  const sectors   = [...new Set(portfolioData.map(s => s.sector))];
+  return `## Performance Summary\nYour portfolio is currently ${sentiment}, with a net return of ${totalPLPct.toFixed(2)}% and a health score of ${healthScore}/100.${bestStock ? ` ${bestStock} stands out as your top performer this period.` : ''} Staying patient and regularly reviewing positions will be key to long-term success.\n\n## Risk Analysis\nThe portfolio carries a mixed risk profile.${worstStock ? ` ${worstStock} warrants close monitoring given its current trajectory.` : ' All positions appear stable at present.'} Maintaining stop-loss levels on volatile holdings can protect downside without limiting growth potential.\n\n## Diversification Insights\nYour holdings span ${sectors.length} sector${sectors.length > 1 ? 's' : ''}: ${sectors.join(', ')}. ${sectors.length < 4 ? 'There is room to improve diversification — consider adding exposure to sectors currently absent.' : 'This is a solid multi-sector spread that helps cushion against single-sector shocks.'}\n\n## Strengths\n${bestStock ? `• ${bestStock} is a standout performer — consider holding and letting profits run.\n` : ''}• You are actively tracking your investments, which is the first step to better outcomes.\n${sectors.length >= 3 ? '• Multi-sector exposure reduces concentration risk.\n' : ''}\n## Areas to Watch\n${worstStock ? `• ${worstStock} is underperforming — review your original thesis.\n` : ''}• Ensure no single stock exceeds 25% of total portfolio value.\n• Review positions that have been flat for extended periods.\n\n## Actionable Recommendations\n1. Set a firm stop-loss (7–10% below buy price) on your highest-risk positions.\n2. ${totalPLPct > 15 ? 'Consider booking partial profits on top gainers to lock in returns.' : 'Accumulate quality stocks during dips — volatility is your friend with conviction.'}\n3. Add at least one stock from a sector not currently in your portfolio.\n4. Review this portfolio quarterly — 30 minutes every 3 months makes a meaningful difference.\n5. Keep 10–15% of your intended allocation in cash for opportunistic buying.\n\n## Closing Note\nBuilding wealth through equities is a long game. The fact that you are actively tracking and analysing your portfolio puts you ahead of most retail investors. Stay disciplined, review your thesis regularly, and do not let short-term noise distract from your long-term goals.`;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   REPORT HTML BUILDER
+   ───────────────────────────────────────────────────────────────────────── */
+function buildReportHTML(aiText, userName, userEmail) {
+  const stats    = calcPortfolio();
+  const health   = calcHealthScore();
+  const insights = generateInsights();
+  const date     = new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+
+  const plColour     = stats.totalPL >= 0 ? '#15803d' : '#dc2626';
+  const plSign       = stats.totalPL >= 0 ? '+' : '';
+  const healthColour = health >= 75 ? '#15803d' : health >= 50 ? '#b45309' : '#dc2626';
+  const healthLabel  = health >= 75 ? 'Excellent' : health >= 50 ? 'Good' : health >= 25 ? 'Fair' : 'Needs Attention';
+
+  /* Holdings rows */
+  const holdingsRows = portfolio.map(s => {
+    const invested = s.qty * s.buyPrice;
+    const value    = s.qty * s.currentPrice;
+    const pl       = value - invested;
+    const plPct    = ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100;
+    const c        = pl >= 0 ? '#15803d' : '#dc2626';
+    return `
+    <tr>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;">
+        <strong style="display:block;font-size:11px;color:#111827;">${s.name}</strong>
+        <span style="font-size:9px;color:#6b7280;">${s.key} · ${s.sector}</span>
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:11px;">${s.qty}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;">₹${s.buyPrice.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;">₹${s.currentPrice.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;">₹${invested.toLocaleString('en-IN',{minimumFractionDigits:0,maximumFractionDigits:0})}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;">₹${value.toLocaleString('en-IN',{minimumFractionDigits:0,maximumFractionDigits:0})}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;color:${c};font-weight:600;">
+        ${pl >= 0 ? '+' : ''}₹${Math.abs(pl).toLocaleString('en-IN',{minimumFractionDigits:0,maximumFractionDigits:0})}<br>
+        <span style="font-weight:400;font-size:9px;">${(plPct >= 0 ? '+' : '')+plPct.toFixed(2)}%</span>
+      </td>
+    </tr>`;
+  }).join('');
+
+  /* Risk breakdown */
+  const rg = { High:[], Medium:[], Low:[] };
+  portfolio.forEach(s => {
+    const plPct = ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100;
+    const beta  = s.beta || 1;
+    const lvl   = (beta >= 1.0 && plPct < -10) ? 'High' : (beta >= 1.0 || plPct < -5) ? 'Medium' : 'Low';
+    rg[lvl].push(s.name);
+  });
+
+  /* AI text → HTML */
+  const aiHTML = aiText.split('\n').map(line => {
+    if (line.startsWith('## ')) return `<h3 style="font-size:12px;font-weight:700;color:#1a2e1a;margin:14px 0 5px;border-bottom:1px solid #e5e7eb;padding-bottom:3px;">${line.slice(3)}</h3>`;
+    if (line.match(/^\d+\./))    return `<p style="margin:3px 0 3px 10px;font-size:10.5px;color:#374151;">${line}</p>`;
+    if (line.match(/^[•\-]\s/))  return `<p style="margin:2px 0 2px 10px;font-size:10.5px;color:#374151;">• ${line.replace(/^[•\-]\s*/,'')}</p>`;
+    if (line.trim() === '')      return '';
+    return `<p style="margin:3px 0;font-size:10.5px;color:#374151;line-height:1.55;">${line.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>`;
+  }).join('');
+
+  return `<div style="box-sizing:border-box; width:760px; margin:0 auto; padding:32px; background:#ffffff; font-family:Arial,sans-serif; color:#111827;">
+  <!-- HEADER -->
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:3px solid #15803d;margin-bottom:20px;">
+    <div>
+      <div style="font-size:20px;font-weight:800;color:#15803d;">₹ EveryRupee</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px;">Personal Portfolio Report</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:12px;font-weight:600;color:#111827;">${userName || 'Portfolio Holder'}</div>
+      <div style="font-size:10px;color:#6b7280;">${userEmail || ''}</div>
+      <div style="font-size:10px;color:#6b7280;margin-top:2px;">${date}</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY CARDS — use a table for reliable PDF layout -->
+  <table style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:8px;margin-bottom:20px;"><tr>
+    <td style="background:#f0fdf4;border-radius:6px;padding:12px;border:1px solid #bbf7d0;width:25%;">
+      <div style="font-size:8px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Total Invested</div>
+      <div style="font-size:15px;font-weight:800;color:#111827;">₹${stats.totalInvested.toLocaleString('en-IN',{maximumFractionDigits:0})}</div>
+      <div style="font-size:8px;color:#6b7280;margin-top:2px;">${portfolio.length} position${portfolio.length>1?'s':''}</div>
+    </td>
+    <td style="background:#fefce8;border-radius:6px;padding:12px;border:1px solid #fde68a;width:25%;">
+      <div style="font-size:8px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Current Value</div>
+      <div style="font-size:15px;font-weight:800;color:#111827;">₹${stats.totalValue.toLocaleString('en-IN',{maximumFractionDigits:0})}</div>
+      <div style="font-size:8px;color:#6b7280;margin-top:2px;">Market value</div>
+    </td>
+    <td style="background:${stats.totalPL>=0?'#f0fdf4':'#fef2f2'};border-radius:6px;padding:12px;border:1px solid ${stats.totalPL>=0?'#bbf7d0':'#fecaca'};width:25%;">
+      <div style="font-size:8px;font-weight:700;color:${plColour};text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Profit / Loss</div>
+      <div style="font-size:15px;font-weight:800;color:${plColour};">${plSign}₹${Math.abs(stats.totalPL).toLocaleString('en-IN',{maximumFractionDigits:0})}</div>
+      <div style="font-size:8px;color:${plColour};margin-top:2px;">${(stats.totalPLPct>=0?'+':'')+stats.totalPLPct.toFixed(2)}%</div>
+    </td>
+    <td style="background:#f5f3ff;border-radius:6px;padding:12px;border:1px solid #ddd6fe;width:25%;">
+      <div style="font-size:8px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Health Score</div>
+      <div style="font-size:15px;font-weight:800;color:${healthColour};">${health}/100</div>
+      <div style="font-size:8px;color:#6b7280;margin-top:2px;">${healthLabel}</div>
+    </td>
+  </tr></table>
+
+  <!-- HOLDINGS -->
+  <div style="font-size:13px;font-weight:700;color:#1a2e1a;margin:0 0 8px;padding-bottom:5px;border-bottom:2px solid #15803d;">Portfolio Holdings</div>
+  <table style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:20px;">
+    <thead><tr style="background:#f0fdf4;">
+      <th style="padding:7px 8px;text-align:left;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Stock</th>
+      <th style="padding:7px 8px;text-align:center;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Qty</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Buy</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Current</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Invested</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Value</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">P/L</th>
+    </tr></thead>
+    <tbody>${holdingsRows}</tbody>
+  </table>
+
+  <!-- AI ANALYSIS -->
+  <div style="font-size:13px;font-weight:700;color:#1a2e1a;margin:0 0 8px;padding-bottom:5px;border-bottom:2px solid #15803d;">AI-Powered Analysis</div>
+  <div style="margin-bottom:20px;background:#fafafa;border-radius:6px;padding:14px;border:1px solid #e5e7eb;">${aiHTML}</div>
+
+  <!-- INSIGHTS -->
+  <div style="font-size:13px;font-weight:700;color:#1a2e1a;margin:0 0 8px;padding-bottom:5px;border-bottom:2px solid #15803d;">Portfolio Insights</div>
+  <div style="margin-bottom:20px;">
+    ${insights.map(ins=>`<div style="display:flex;gap:7px;padding:7px 10px;border-radius:5px;margin-bottom:5px;background:${ins.type==='alert'?'#fef2f2':ins.type==='good'?'#f0fdf4':'#f9fafb'};border-left:3px solid ${ins.type==='alert'?'#dc2626':ins.type==='good'?'#15803d':'#9ca3af'};">
+      <span style="font-size:12px;">${ins.icon}</span>
+      <span style="font-size:10.5px;color:#374151;line-height:1.5;">${ins.text}</span>
+    </div>`).join('')}
+  </div>
+
+  <!-- RISK -->
+  <div style="font-size:13px;font-weight:700;color:#1a2e1a;margin:0 0 8px;padding-bottom:5px;border-bottom:2px solid #15803d;">Risk Breakdown</div>
+  <table style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:8px;margin-bottom:20px;"><tr>
+    <td style="background:#fef2f2;border-radius:6px;padding:10px;border:1px solid #fecaca;vertical-align:top;">
+      <div style="font-size:9px;font-weight:700;color:#dc2626;margin-bottom:5px;">🔴 HIGH RISK</div>
+      ${rg.High.length?rg.High.map(n=>`<div style="font-size:10px;color:#374151;margin-bottom:2px;">• ${n}</div>`).join(''):'<div style="font-size:10px;color:#6b7280;">None</div>'}
+    </td>
+    <td style="background:#fffbeb;border-radius:6px;padding:10px;border:1px solid #fde68a;vertical-align:top;">
+      <div style="font-size:9px;font-weight:700;color:#b45309;margin-bottom:5px;">🟡 MEDIUM RISK</div>
+      ${rg.Medium.length?rg.Medium.map(n=>`<div style="font-size:10px;color:#374151;margin-bottom:2px;">• ${n}</div>`).join(''):'<div style="font-size:10px;color:#6b7280;">None</div>'}
+    </td>
+    <td style="background:#f0fdf4;border-radius:6px;padding:10px;border:1px solid #bbf7d0;vertical-align:top;">
+      <div style="font-size:9px;font-weight:700;color:#15803d;margin-bottom:5px;">🟢 LOW RISK</div>
+      ${rg.Low.length?rg.Low.map(n=>`<div style="font-size:10px;color:#374151;margin-bottom:2px;">• ${n}</div>`).join(''):'<div style="font-size:10px;color:#6b7280;">None</div>'}
+    </td>
+  </tr></table>
+
+  <!-- FOOTER -->
+  <div style="border-top:1px solid #e5e7eb;padding-top:10px;display:flex;justify-content:space-between;">
+    <span style="font-size:9px;color:#9ca3af;">₹ EveryRupee · ${date}</span>
+    <span style="font-size:9px;color:#9ca3af;">Prices may be delayed. Not financial advice.</span>
+  </div>
+</div>`;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MAIN GENERATOR
+   ───────────────────────────────────────────────────────────────────────── */
+async function generateAIReport() {
+  if (portfolio.length === 0) {
+    showToast('Please add stocks to your portfolio first.', 'error');
+    return;
+  }
+
+  const btns = document.querySelectorAll('[onclick="generateAIReport()"]');
+  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.65'; b.style.cursor = 'not-allowed'; });
+
+  showToast('Generating AI analysis…', '');
+
+  // ── THE FIX: render into an off-screen div appended to <body>
+  //    html2canvas CANNOT measure elements with display:none — renders blank.
+  //    position:fixed/-9999px renders correctly then disappears after export.
+  const wrapper = document.createElement('div');
+  // Added display:flex and justify-content:center to force perfect centering
+  wrapper.style.cssText = 'position:absolute; left:0; top:0; width: 100%; display: flex; justify-content: center; background:#fff; z-index:-9999; opacity:0; pointer-events:none;';
+  document.body.appendChild(wrapper);
+
+  try {
+    const userName  = document.getElementById('user-name')?.value?.trim()  || 'Portfolio Holder';
+    const userEmail = document.getElementById('user-email')?.value?.trim() || '';
+
+    const stats  = calcPortfolio();
+    const health = calcHealthScore();
+
+    const portfolioData = portfolio.map(s => ({
+      symbol: s.key, name: s.name, sector: s.sector,
+      qty: s.qty, buyPrice: s.buyPrice, currentPrice: s.currentPrice,
+      plPct: ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100,
+      beta: s.beta
+    }));
+    const summaryData = {
+      totalInvested: stats.totalInvested, totalValue: stats.totalValue,
+      totalPL: stats.totalPL, totalPLPct: stats.totalPLPct,
+      bestStock: stats.best?.name || null, worstStock: stats.worst?.name || null,
+      healthScore: health
+    };
+
+    showToast('AI is analysing your portfolio…', '');
+    const aiText = await generateAIAnalysisText(portfolioData, summaryData);
+
+    showToast('Building PDF…', '');
+    const html = buildReportHTML(aiText, userName, userEmail);
+    wrapper.innerHTML = html;
+
+    // Give the browser one frame to lay out before capturing
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+    const element  = wrapper.firstElementChild;
+    const fileName = `EveryRupee_Report_${(userName).replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.pdf`;
+
+    await html2pdf()
+      .set({
+        margin:       0,
+        filename:     fileName,
+        image:        { type: 'jpeg', quality: 0.97 },
+        html2canvas:  {
+          scale:          2,
+          useCORS:        true,
+          letterRendering: true,
+          windowWidth:    760,
+          scrollX:        0,
+          scrollY:        0,
+          width:          760,
+          x:              0,
+          y:              0,
+        },
+        jsPDF: { unit: 'px', format: [760, 1200], orientation: 'portrait', hotfixes: ['px_scaling'] },
+        pagebreak: { mode: ['css', 'legacy'] }
+      })
+      .from(element)
+      .save();
+
+    showToast('Report downloaded! 🎉', 'success');
+
+  } catch (err) {
+    console.error('[ReportGenerator]', err);
+    showToast('Report generation failed — check console for details.', 'error');
+  } finally {
+    document.body.removeChild(wrapper);
+    btns.forEach(b => { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; });
+  }
+}
+</script>
+
+<!-- FIX: Footer moved below report section -->
+<footer style="background: var(--green-900); color: rgba(250,246,238,0.45); text-align: center; padding: var(--space-lg); font-size: 0.8rem; margin-top: var(--space-xl);">
+  <span class="font-display" style="color: var(--gold-400); font-size: 1rem;">EveryRupee</span>
+  — Investment Assistant &nbsp;·&nbsp; Prices may be delayed. Not financial advice. &nbsp;·&nbsp;
+  <a href="#" style="color: var(--gold-300); text-decoration: none;">Privacy Policy</a>
+</footer>
 </body>
 </html>

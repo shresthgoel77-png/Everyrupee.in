@@ -141,10 +141,17 @@ body {
 
 /* ── Page Hero ────────────────────────────────────────────── */
 .page-hero {
+  position: relative;
   padding: 140px 48px 80px;
-  max-width: 900px;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
+  overflow: hidden; /* Contains the video */
+  min-height: 400px; /* Ensures the hero has height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .hero-video {
@@ -154,7 +161,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover; /* This makes the video crop perfectly to fill the space without squishing */
-  z-index: 1;
+  z-index: 0;
 }
 
 .hero-overlay {
@@ -164,13 +171,15 @@ body {
   width: 100%;
   height: 100%;
   /* A black overlay at 60% opacity. Adjust the 0.6 up or down depending on how bright your video is */
-  background-color: rgba(0, 0, 0, 0.1); 
-  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.4); 
+  z-index: 1;
 }
 
 .hero-content {
   position: relative;
-  z-index: 3;
+  z-index: 2;
+  max-width: 900px;
+  width: 100%;
 }
 
 .page-hero__eyebrow {
@@ -385,6 +394,8 @@ body {
 
 /* ── Section Utility ──────────────────────────────────────── */
 .section {
+  position: relative;
+  z-index: 10;
   padding: 80px 48px;
   max-width: 1160px;
   margin: 0 auto;
